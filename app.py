@@ -17,8 +17,9 @@ migration = Migrate(app, db)
 class Person(db.Model):
     __tablename__ = 'person'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
     description = db.Column(db.String(), nullable=False)
-    completed = db.Column(db.Boolean, nullable=False, default=False)
+    completed = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return f' {self.id} {self.name}'

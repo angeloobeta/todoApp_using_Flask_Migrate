@@ -30,6 +30,7 @@ def upgrade():
     sa.Column('completed', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.alter_column()
     op.drop_table('persons')
     # ### end Alembic commands ###
 
