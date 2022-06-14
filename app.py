@@ -34,31 +34,41 @@ class Todo(db.Model):
         return f'<Todo {self.id} {self.description}>'
 
 
-@app.route('/todos/create', methods=['POST'])
-def create_todo():
-    body = {}
-    error = False
-    try:
-        description = request.get_json()['description']
-        todo = Todo(description=description)
-        body['description'] = todo.description
-        db.session.add(todo)
-        db.session.commit()
-    except:
-        error = True
-        db.session.rollback()
-        print(sys.exc_info())
-    finally:
-        db.session.close()
-        if error == True:
-            abort(400)
-        else:
-            return jsonify(body)
-
+# @app.route('/todos/create', methods=['POST'])
+# def create_todo():
+#     body = {}
+#     error = False
+#     try:
+#         description = request.get_json()['description']
+#         todo = Todo(description=description)
+#         body['description'] = todo.description
+#         db.session.add(todo)
+#         db.session.commit()
+#     except:
+#         error = True
+#         db.session.rollback()
+#         print(sys.exc_info())
+#     finally:
+#         db.session.close()
+#         if error == True:
+#             abort(400)
+#         else:
+#             return jsonify(body)
 
 @app.route('/')
 def index():
-    return render_template('index.html', data=Todo.query.all())
+    users = ['Ifeanyichukwu Obeta', 'Software Engineer']
+    return render_template('index.html', datium=[
+        {'description': "Todo Item 1"},
+        {'description': "Todo Item 2"},
+        {"description": "Todo Item 3"},
+        {"description": "Todo Item 4"},
+    ], user=users)
+
+
+# @app.route('/')
+# def index():
+#     return render_template('edit_index.html', data=Todo.query.all())
 
 
 # db.create_all()
@@ -74,5 +84,5 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
-    # app.run()
+    # app.run(host="0.0.0.0")
+    app.run()
