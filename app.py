@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import app
 
 app = Flask(__name__)
 # moment = Moment(app)
@@ -82,9 +81,9 @@ db.create_all()
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
     # name = request.form.get('name', '')
-    name = request.get_json['name']
+    name = request.get_json()['name']
     # description = request.form.get('description', '')
-    description = request.get_json['description']
+    description = request.get_json()['description']
     person = Person(description=description, name=name)
     db.session.add(person)
     db.session.commit()

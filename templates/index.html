@@ -11,9 +11,9 @@
 </head>
 <body>
 <form id="form">
-    <li><input type="text" name="name" value="name"></li>
-    <li><input type="text" name="description" value="description"></li>
-    <li><input type="submit" value="Create"><li>
+    <input type="text" name="name" value="name">
+    <input type="text" name="description" value="description">
+    <input type="submit" value="Create">
 </form>
 <div id="error" class="hidden"> Something went wrong</div>
 <ul id="todo">{% for d in data %}
@@ -36,9 +36,9 @@
             {return response.json();}
         ).then(function (jsonResponse){
             console.log(jsonResponse);
-            const id_liItem = document.createElement("li");
-            const name_liItem = document.createElement("li");
-            const description_liItem = document.createElement("li");
+            const id_liItem = document.createElement("id_li");
+            const name_liItem = document.createElement("name_li");
+            const description_liItem = document.createElement("description_li");
             id_liItem.innerHTML = jsonResponse['id'];
             name_liItem.innerHTML = jsonResponse['name'];
             description_liItem.innerHTML = jsonResponse['description'];
