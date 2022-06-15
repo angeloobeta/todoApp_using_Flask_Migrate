@@ -4,3 +4,6 @@ flask-moment==0.11.0
 flask-wtf==0.14.3
 flask_sqlalchemy==2.5.1
 Flask-Migrate
+Flask~=2.1.2
+alembic~=1.8.0
+SQLAlchemy~=1.4.37

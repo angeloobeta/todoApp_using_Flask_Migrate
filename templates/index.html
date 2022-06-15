@@ -5,9 +5,10 @@
     <title>TodoApp</title>
 </head>
 <body>
-<ul>{% for u in user %}
-    <li>{{ u }}</li>
-    {% endfor %}
-</ul>
+<form method="post" action="/todo/create">
+    <li><input type="text" name="name" value="name"></li>
+    <li><input type="text" name="description" value="description"></li>
+    <li><input type="submit" value="Create"><li>
+</form>
 </body>
 </html>
