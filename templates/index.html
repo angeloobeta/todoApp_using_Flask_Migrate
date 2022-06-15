@@ -3,12 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>TodoApp</title>
+        <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<form method="post" action="/todo/create">
+<form id="form">
     <li><input type="text" name="name" value="name"></li>
     <li><input type="text" name="description" value="description"></li>
     <li><input type="submit" value="Create"><li>
 </form>
+<div id="error" class="hidden"> Something went wrong</div>
+<ul id="todo">{% for d in data %}
+    <pre><li>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}</li></pre>
+    {% endfor %}
+</ul>
+<script>
+    document.getElementById("form").onsubmit =  function (e){
+        e.preventDefault()
+        fetch('/todos/create',{
+            method:'POST',
+            body: JSON.stringify({
+                'name': document.getElementById("name").value,
+                'description': document.getElementById("description").value
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function (response)
+            {return response.json();}
+        ).then(function (jsonResponse){
+            console.log(jsonResponse);
+            const id_liItem = document.createElement("li");
+            const name_liItem = document.createElement("li");
+            const description_liItem = document.createElement("li");
+            id_liItem.innerHTML = jsonResponse['id'];
+            name_liItem.innerHTML = jsonResponse['name'];
+            description_liItem.innerHTML = jsonResponse['description'];
+            document.getElementById("todo").appendChild(id_liItem);
+            document.getElementById("todo").appendChild(name_liItem);
+            document.getElementById("todo").appendChild(description_liItem);
+            document.getElementById("error").className = "hidden";
+        }).catch(function (){
+            document.getElementById('error').className = "";
+        })
+    }
+</script>
 </body>
 </html>

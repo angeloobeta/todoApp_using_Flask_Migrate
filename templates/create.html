@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="error" class="hidden"> Something went wrong</div>
+<ul id="todo">{% for d in data %}
+    <pre><li>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}</li></pre>
+    {% endfor %}
+</ul>
+</body>
+</html>
