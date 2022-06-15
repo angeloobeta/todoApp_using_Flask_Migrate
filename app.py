@@ -1,10 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_moment import Moment
-from jinja2.utils import markupsafe
-from markupsafe import Markup
-
-markupsafe.Markup()
-Markup('')
 import config
 from model import Person, db_setup
 
