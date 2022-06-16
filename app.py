@@ -59,11 +59,12 @@ class Todo(db.Model):
 db.create_all()
 
 
-@app.route('/todo/<person_id>/delete-item')
-def delete_item(person_id):
+@app.route('/todo/delete-item', methods=['DELETE'])
+def delete_item():
     try:
         person_id = request.get_json()['person_id']
         person = Person.query.get(person_id)
+        print(person)
         db.session.delete(person)
         db.session.commit()
     except:

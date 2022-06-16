@@ -12,6 +12,19 @@
             margin: 0;
             padding: 0;
         }
+        li{
+            font-size: 20px;
+            color: darkolivegreen;
+        }
+        li button{
+            -webkit-appearance: none;
+            border: none;
+            outline: none;
+            color: orangered;
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -22,26 +35,23 @@
 </form>
 <div id="error" class="hidden"> Something went wrong</div>
 <ul id="todo">{% for d in data %}
-    <pre><li><input data-id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %}/>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}</li></pre>
+    <pre><li><input data-id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %}/>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}
+        <button class="delete-button" data-id="{{ d.id }}">&cross;</button></li></pre>
     {% endfor %}
 </ul>
 <script>
-    document.getElementById('li').onclick = function (e){
+    const deleteButton = document.querySelectorAll('.delete-button');
+    for(let i = 0; i<deleteButton.length; i++){
+        const  button = deleteButton[i]
+        button.onclick = function (e){
         console.log('event', e);
-        const selectedItem = e.target.dataset['id'];
+        const personId = e.target.dataset['id'];
         fetch('/todo/'+ personId + '/delete-item',{
-            method: 'POST',
-            body:JSON.stringify({
-                'person_id': personId
-            }),headers:{
-                'Content-Type': 'application/json'
-            }
-        }).then(function (){
-                document.getElementById("error").className = "hidden";
-            }).catch(function (){
-            document.getElementById('error').className = "";
+            method: 'DELETE'
         })
     }
+    }
+
     const checkboxes = document.querySelectorAll('.check-completed');
     for(let i = 0; i < checkboxes.length; i++){
         const checkbox = checkboxes[i];
@@ -50,7 +60,7 @@
             const newCompleted = e.target.checked;
             const todoId = e.target.dataset['id'];
             console.log(todoId);
-            fetch('/todo/'+ todoId + '/set-completed', {
+            fetch('/todo/set-completed', {
                 method: 'POST',
                 body: JSON.stringify({
                     'completed': newCompleted
