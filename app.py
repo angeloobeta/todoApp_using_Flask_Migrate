@@ -59,12 +59,26 @@ class Todo(db.Model):
 db.create_all()
 
 
-@app.route('/todo/<todo_id>/set-completed', methods=['POST'])
-def set_completed(todo_id):
+@app.route('/todo/<person_id>/delete-item')
+def delete_item(person_id):
+    try:
+        person_id = request.get_json()['person_id']
+        person = Person.query.get(person_id)
+        db.session.delete(person)
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+        return redirect(url_for('index'))
+
+
+@app.route('/todo/<person_id>/set-completed', methods=['POST'])
+def set_completed(person_id):
     try:
         completed = request.get_json()['completed']
         print('complete', completed)
-        person = Person.query.get(todo_id)
+        person = Person.query.get(person_id)
         person.completed = completed
         db.session.commit()
     except:
