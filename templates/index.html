@@ -35,15 +35,18 @@
         }).then(response => response.json()
         ).then(function (jsonResponse){
             console.log(jsonResponse);
+            const place_holder =  document.createElement("li")
             const id_ = document.createElement("li");
             const name_ = document.createElement("li");
             const description_ = document.createElement("li");
             id_.innerHTML = jsonResponse['id'];
             name_.innerHTML = jsonResponse['name'];
             description_.innerHTML = jsonResponse['description'];
-            document.getElementById("todo").appendChild(name_);
-            document.getElementById("todo").insertBefore(id_,name_);
-            document.getElementById("todo").appendChild(description_);
+            place_holder.innerHTML = id_.innerHTML + "  ==> " + name_.innerHTML + " is " + description_.innerHTML
+            document.getElementById("todo").appendChild(place_holder)
+            {#document.getElementById("todo").appendChild(id_);#}
+            {#document.getElementById("todo").appendChild(name_);#}
+            {#document.getElementById("todo").appendChild(description_);#}
             document.getElementById("error").className = "hidden";
         }).catch(function (){
             document.getElementById('error').className = "";
