@@ -83,6 +83,7 @@ db.create_all()
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
     error = None
+    body = {}
     try:
         # name = request.form.get('name', '')
         name = request.get_json()['name']
@@ -91,6 +92,9 @@ def create_todo():
         person = Person(description=description, name=name)
         db.session.add(person)
         db.session.commit()
+        body['id'] = person.id
+        body['name'] = person.name
+        body['description'] = person.description
     except:
         db.session.rollback()
         error = True
@@ -100,11 +104,7 @@ def create_todo():
     if error:
         abort(400)
     else:
-        return jsonify({
-            'description': person.description,
-            'name': person.name,
-            'id': person.id
-        })
+        return jsonify(body)
     # return render_template('create.html', data=Person.query.all())
     # return redirect(url_for('index'))
 
