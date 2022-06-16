@@ -11,8 +11,8 @@
 </head>
 <body>
 <form id="form">
-    <input type="text" name="name" value="name">
-    <input type="text" name="description" value="description">
+    <input id="name" type="text" name="name" value="name">
+    <input id="description" type="text" name="description" value="description">
     <input type="submit" value="Create">
 </form>
 <div id="error" class="hidden"> Something went wrong</div>
@@ -27,24 +27,23 @@
             method:'POST',
             body: JSON.stringify({
                 'name': document.getElementById("name").value,
-                'description': document.getElementById("description").value
+                'description': document.getElementById("description").value,
             }),
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(function (response)
-            {return response.json();}
+        }).then(response => response.json()
         ).then(function (jsonResponse){
             console.log(jsonResponse);
-            const id_liItem = document.createElement("id_li");
-            const name_liItem = document.createElement("name_li");
-            const description_liItem = document.createElement("description_li");
-            id_liItem.innerHTML = jsonResponse['id'];
-            name_liItem.innerHTML = jsonResponse['name'];
-            description_liItem.innerHTML = jsonResponse['description'];
-            document.getElementById("todo").appendChild(id_liItem);
-            document.getElementById("todo").appendChild(name_liItem);
-            document.getElementById("todo").appendChild(description_liItem);
+            const id_ = document.createElement("li");
+            const name_ = document.createElement("li");
+            const description_ = document.createElement("li");
+            id_.innerHTML = jsonResponse['id'];
+            name_.innerHTML = jsonResponse['name'];
+            description_.innerHTML = jsonResponse['description'];
+            document.getElementById("todo").appendChild(name_);
+            document.getElementById("todo").insertBefore(id_,name_);
+            document.getElementById("todo").appendChild(description_);
             document.getElementById("error").className = "hidden";
         }).catch(function (){
             document.getElementById('error').className = "";

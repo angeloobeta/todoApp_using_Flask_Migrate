@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+import sys
+
+from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
 import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -80,18 +82,29 @@ db.create_all()
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
-    # name = request.form.get('name', '')
-    name = request.get_json()['name']
-    # description = request.form.get('description', '')
-    description = request.get_json()['description']
-    person = Person(description=description, name=name)
-    db.session.add(person)
-    db.session.commit()
-    return jsonify({
-        'description': person.description,
-        'name': person.name,
-        'id': person.id
-    })
+    error = None
+    try:
+        # name = request.form.get('name', '')
+        name = request.get_json()['name']
+        # description = request.form.get('description', '')
+        description = request.get_json()['description']
+        person = Person(description=description, name=name)
+        db.session.add(person)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    if error:
+        abort(400)
+    else:
+        return jsonify({
+            'description': person.description,
+            'name': person.name,
+            'id': person.id
+        })
     # return render_template('create.html', data=Person.query.all())
     # return redirect(url_for('index'))
 
