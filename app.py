@@ -59,26 +59,20 @@ class Todo(db.Model):
 db.create_all()
 
 
-# @app.route('/todos/create', methods=['POST'])
-# def create_todo():
-#     body = {}
-#     error = False
-#     try:
-#         description = request.get_json()['description']
-#         todo = Todo(description=description)
-#         body['description'] = todo.description
-#         db.session.add(todo)
-#         db.session.commit()
-#     except:
-#         error = True
-#         db.session.rollback()
-#         print(sys.exc_info())
-#     finally:
-#         db.session.close()
-#         if error == True:
-#             abort(400)
-#         else:
-#             return jsonify(body)
+@app.route('/todo/<todo_id>/set-completed', methods=['POST'])
+def set_completed(todo_id):
+    try:
+        completed = request.get_json()['completed']
+        print('complete', completed)
+        person = Person.query.get(todo_id)
+        person.completed = completed
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+        return redirect(url_for('index'))
+
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
@@ -111,7 +105,7 @@ def create_todo():
 
 @app.route('/')
 def index():
-    return render_template('index.html', data=Person.query.all())
+    return render_template('index.html', data=Person.query.order_by('id').all())
 
 
 # db.create_all()
