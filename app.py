@@ -25,27 +25,35 @@ Migrate(app, db)
 #     return db
 
 
-class Person(db.Model):
+# class Person(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(), nullable=False)
+#     description = db.Column(db.String(), nullable=False)
+#     completed = db.Column(db.Boolean, nullable=True)
+#
+#     def __int__(self, id, name, description, completed):
+#         self.id = id
+#         self.name = name
+#         self.description = description
+#         self.completed = completed
+#
+#     def __repr__(self):
+#         return f' {self.id} {self.name}'
+
+
+class Todolist(db.Model):
+    __tablename__ = 'todolist'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    description = db.Column(db.String(), nullable=False)
-    completed = db.Column(db.Boolean, nullable=True)
-
-    def __int__(self, id, name, description, completed):
-        self.id = id
-        self.name = name
-        self.description = description
-        self.completed = completed
-
-    def __repr__(self):
-        return f' {self.id} {self.name}'
+    name = db.Column(db.String, nullable=True)
+    todos = db.relationship('Todo', backref='list', lazy=True)
 
 
 class Todo(db.Model):
-    __tablename__ = 'todos'
+    __tablename__ = 'todo'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(), nullable=False)
     completed = db.Column(db.Boolean, nullable=False, default=False)
+    list_id = db.Column(db.Integer, db.ForeignKey('todolist.id'), nullable=False)
 
     def __int__(self, id, description, completed):
         self.id = id
@@ -56,16 +64,13 @@ class Todo(db.Model):
         return f'<Todo {self.id} {self.description}>'
 
 
-db.create_all()
-
-
 @app.route('/todo/delete-item', methods=['DELETE'])
 def delete_item():
     try:
-        person_id = request.get_json()['person_id']
-        person = Person.query.get(person_id)
-        print(person)
-        db.session.delete(person)
+        todo_id = request.get_json()['person_id']
+        todo = Todo.query.get(todo_id)
+        print(todo)
+        db.session.delete(todo)
         db.session.commit()
     except:
         db.session.rollback()
@@ -74,13 +79,13 @@ def delete_item():
         return redirect(url_for('index'))
 
 
-@app.route('/todo/<person_id>/set-completed', methods=['POST'])
-def set_completed(person_id):
+@app.route('/todo/<todo_id>/set-completed', methods=['POST'])
+def set_completed(todo_id):
     try:
         completed = request.get_json()['completed']
         print('complete', completed)
-        person = Person.query.get(person_id)
-        person.completed = completed
+        todo = Todo.query.get(todo_id)
+        todo.completed = completed
         db.session.commit()
     except:
         db.session.rollback()
@@ -98,12 +103,12 @@ def create_todo():
         name = request.get_json()['name']
         # description = request.form.get('description', '')
         description = request.get_json()['description']
-        person = Person(description=description, name=name)
-        db.session.add(person)
+        todo = Todo(description=description, name=name)
+        db.session.add(todo)
         db.session.commit()
-        body['id'] = person.id
-        body['name'] = person.name
-        body['description'] = person.description
+        body['id'] = todo.id
+        body['name'] = todo.name
+        body['description'] = todo.description
     except:
         db.session.rollback()
         error = True
@@ -120,19 +125,7 @@ def create_todo():
 
 @app.route('/')
 def index():
-    return render_template('index.html', data=Person.query.order_by('id').all())
-
-
-# db.create_all()
-
-
-# @app.route('/')
-# def index():
-#     db = Todo.query.first()
-#     return db.name
-
-
-# db = SQLAlchemy(app)
+    return render_template('index.html', data=Todo.query.order_by('id').all())
 
 
 if __name__ == '__main__':

@@ -2,18 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
+    <title>TodoApp</title>
+        <style>
         .hidden {
             display: none;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        li{
+            font-size: 20px;
+            color: darkolivegreen;
+        }
+        li button{
+            -webkit-appearance: none;
+            border: none;
+            outline: none;
+            color: orangered;
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
         }
     </style>
 </head>
 <body>
+<form id="form">
+    <input id="name" type="text" name="name" value="name">
+    <input id="description" type="text" name="description" value="description">
+    <input type="submit" value="Create">
+</form>
 <div id="error" class="hidden"> Something went wrong</div>
 <ul id="todo">{% for d in data %}
-    <pre><li>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}</li></pre>
+    <pre><li><input data-id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %}/>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}
+        <button class="delete-button" data-id="{{ d.id }}">&cross;</button></li></pre>
     {% endfor %}
 </ul>
+<script>
+    const deleteButton = document.querySelectorAll('.delete-button');
+    for(let i = 0; i<deleteButton.length; i++){
+        const  button = deleteButton[i]
+        button.onclick = function (e){
+        console.log('event', e);
+        const personId = e.target.dataset['id'];
+        fetch('/todo/'+ personId + '/delete-item',{
+            method: 'DELETE'
+        })
+    }
+    }
+
+    const checkboxes = document.querySelectorAll('.check-completed');
+    for(let i = 0; i < checkboxes.length; i++){
+        const checkbox = checkboxes[i];
+        checkbox.onchange = function (e){
+            console.log(`event`, e);
+            const newCompleted = e.target.checked;
+            const todoId = e.target.dataset['id'];
+            console.log(todoId);
+            fetch('/todo/set-completed', {
+                method: 'POST',
+                body: JSON.stringify({
+                    'completed': newCompleted
+                }),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (){
+                document.getElementById("error").className = "hidden";
+            }).catch(function (){
+            document.getElementById('error').className = "";
+        })
+
+        }
+    }
+    document.getElementById("form").onsubmit =  function (e){
+        e.preventDefault()
+        fetch('/todos/create',{
+            method:'POST',
+            body: JSON.stringify({
+                'name': document.getElementById("name").value,
+                'description': document.getElementById("description").value,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json()
+        ).then(function (jsonResponse){
+            console.log(jsonResponse);
+            const place_holder =  document.createElement("li")
+            const id_ = document.createElement("li");
+            const name_ = document.createElement("li");
+            const description_ = document.createElement("li");
+            id_.innerHTML = jsonResponse['id'];
+            name_.innerHTML = jsonResponse['name'];
+            description_.innerHTML = jsonResponse['description'];
+            place_holder.innerHTML = id_.innerHTML + "  ==> " + name_.innerHTML + " is " + description_.innerHTML
+            document.getElementById("todo").appendChild(place_holder)
+            {#document.getElementById("todo").appendChild(id_);#}
+            {#document.getElementById("todo").appendChild(name_);#}
+            {#document.getElementById("todo").appendChild(description_);#}
+            document.getElementById("error").className = "hidden";
+        }).catch(function (){
+            document.getElementById('error').className = "";
+        })
+    }
+</script>
 </body>
 </html>
