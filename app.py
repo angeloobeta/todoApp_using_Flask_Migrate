@@ -47,7 +47,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(), nullable=False)
     completed = db.Column(db.Boolean, nullable=True)
-    # list_id = db.Column(db.Integer, db.foreign('todolist.id'), nullable=True)
+    list_id = db.Column(db.Integer, nullable=True)
 
     def __int__(self, id, description, completed, list_id):
         self.id = id
