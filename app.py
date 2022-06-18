@@ -64,26 +64,23 @@ class Todo(db.Model):
         return f'<Todo {self.id} {self.description}>'
 
 
-@app.route('/todo/delete-item', methods=['DELETE'])
-def delete_item():
+@app.route('/todos/<todo_id>', methods=['DELETE'])
+def delete_todo(todo_id):
     try:
-        todo_id = request.get_json()['person_id']
-        todo = Todo.query.get(todo_id)
-        print(todo)
-        db.session.delete(todo)
+        Todo.query.filter_by(id=todo_id).delete()
         db.session.commit()
     except:
         db.session.rollback()
     finally:
         db.session.close()
-        return redirect(url_for('create'))
+    return jsonify({'success': True})
 
 
-@app.route('/todo/<todo_id>/set-completed', methods=['POST'])
-def set_completed(todo_id):
+@app.route('/todos/<todo_id>/set-completed', methods=['POST'])
+def set_completed_todo(todo_id):
     try:
         completed = request.get_json()['completed']
-        print('complete', completed)
+        print('completed', completed)
         todo = Todo.query.get(todo_id)
         todo.completed = completed
         db.session.commit()
@@ -91,27 +88,24 @@ def set_completed(todo_id):
         db.session.rollback()
     finally:
         db.session.close()
-        return redirect(url_for('create'))
+    return redirect(url_for('create'))
 
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
-    error = None
+    error = False
     body = {}
     try:
-        # name = request.form.get('name', '')
-        name = request.get_json()['name']
-        # description = request.form.get('description', '')
         description = request.get_json()['description']
-        todo = Todo(description=description, name=name)
+        todo = Todo(description=description, completed=False)
         db.session.add(todo)
         db.session.commit()
         body['id'] = todo.id
-        body['name'] = todo.name
+        body['completed'] = todo.completed
         body['description'] = todo.description
     except:
-        db.session.rollback()
         error = True
+        db.session.rollback()
         print(sys.exc_info())
     finally:
         db.session.close()
@@ -119,8 +113,6 @@ def create_todo():
         abort(400)
     else:
         return jsonify(body)
-    # return render_template('create.html', data=Person.query.all())
-    # return redirect(url_for('index'))
 
 
 @app.route('/')
