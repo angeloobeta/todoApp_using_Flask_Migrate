@@ -30,6 +30,7 @@ class Person(db.Model):
     name = db.Column(db.String(), nullable=False)
     description = db.Column(db.String(), nullable=False)
     completed = db.Column(db.Boolean, nullable=True)
+    # todos = db.relationship('Todo', backref='list', lazy=True)
 
     def __int__(self, id, name, description, completed):
         self.id = id
@@ -45,18 +46,31 @@ class Todo(db.Model):
     __tablename__ = 'todos'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(), nullable=False)
-    completed = db.Column(db.Boolean, nullable=False, default=False)
+    completed = db.Column(db.Boolean, nullable=True)
+    # list_id = db.Column(db.Integer, db.foreign('todolist.id'), nullable=True)
 
-    def __int__(self, id, description, completed):
+    def __int__(self, id, description, completed, list_id):
         self.id = id
         self.description = description
         self.completed = completed
+        self.list_id = list_id
 
     def __repr__(self):
         return f'<Todo {self.id} {self.description}>'
 
 
-db.create_all()
+# class TodoList(db.Model):
+#     __tablename__ = 'todolists'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(), nullable=False)
+#
+#     def __int__(self, id, name, todos):
+#         self.id = id
+#         self.name = name
+#         self.todos = todos
+#
+#     def __repr__(self):
+#         return f'<TodoList {self.id} {self.name}>'
 
 
 @app.route('/todo/delete-item', methods=['DELETE'])
