@@ -76,7 +76,7 @@ def delete_item():
         db.session.rollback()
     finally:
         db.session.close()
-        return redirect(url_for('index'))
+        return redirect(url_for('create'))
 
 
 @app.route('/todo/<todo_id>/set-completed', methods=['POST'])
@@ -91,7 +91,7 @@ def set_completed(todo_id):
         db.session.rollback()
     finally:
         db.session.close()
-        return redirect(url_for('index'))
+        return redirect(url_for('create'))
 
 
 @app.route('/todos/create', methods=['POST'])
@@ -124,8 +124,8 @@ def create_todo():
 
 
 @app.route('/')
-def index():
-    return render_template('index.html', data=Todo.query.order_by('id').all())
+def create():
+    return render_template('create.html', data=Todo.query.order_by('id').all())
 
 
 if __name__ == '__main__':

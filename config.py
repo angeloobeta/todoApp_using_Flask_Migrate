@@ -17,7 +17,5 @@ password = os.environ.get('POSTGRES_PASSWORD')
 localhost = os.environ.get('POSTGRES_HOST')
 port = os.environ.get('POSTGRES_PORT')
 # SQLALCHEMY_DATABASE_URI = f'postgresql://{username}:{password}@{localhost}:{port}/todoapp'
-SQLALCHEMY_DATABASE_URI = f'postgresql://{username}:{password}@{localhost}:{port}/todo'
+SQLALCHEMY_DATABASE_URI = f'postgresql://{username}:{password}@{localhost}:{port}/todos'
 # alter user postgres password 'pass';
-
-
