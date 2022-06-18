@@ -59,18 +59,18 @@ class Todo(db.Model):
         return f'<Todo {self.id} {self.description}>'
 
 
-# class TodoList(db.Model):
-#     __tablename__ = 'todolists'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(), nullable=False)
-#
-#     def __int__(self, id, name, todos):
-#         self.id = id
-#         self.name = name
-#         self.todos = todos
-#
-#     def __repr__(self):
-#         return f'<TodoList {self.id} {self.name}>'
+class TodoList(db.Model):
+    __tablename__ = 'todolists'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+
+    def __int__(self, id, name, todos):
+        self.id = id
+        self.name = name
+        self.todos = todos
+
+    def __repr__(self):
+        return f'<TodoList {self.id} {self.name}>'
 
 
 @app.route('/todo/delete-item', methods=['DELETE'])
