@@ -96,10 +96,9 @@ def create_todo():
     error = False
     body = {}
     try:
-        name = request.get_json()['name']
         description = request.get_json()['description']
         list_id = request.get_json()['list_id']
-        todo = Todo(description=description, name=name, completed=False)
+        todo = Todo(description=description, list_id=list_id, completed=False)
         db.session.add(todo)
         db.session.commit()
         body['id'] = todo.id

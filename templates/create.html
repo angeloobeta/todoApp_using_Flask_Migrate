@@ -29,7 +29,6 @@
 </head>
 <body>
 <form id="form">
-    <input id="name" type="text" name="name" value="name">
     <input id="description" type="text" name="description" value="description">
     <input id="list_id" type="text" name="list_id" value="list_id">
     <input type="submit" value="Create">
@@ -82,7 +81,6 @@
         fetch('/todos/create',{
             method:'POST',
             body: JSON.stringify({
-                'name': document.getElementById("name").value,
                 'description': document.getElementById("description").value,
                 'list_id': document.getElementById("list_id").value,
             }),
@@ -97,9 +95,8 @@
             const name_ = document.createElement("li");
             const description_ = document.createElement("li");
             id_.innerHTML = jsonResponse['id'];
-            name_.innerHTML = jsonResponse['name'];
             description_.innerHTML = jsonResponse['description'];
-            place_holder.innerHTML = id_.innerHTML + "  ==> " + name_.innerHTML + " is " + description_.innerHTML
+            place_holder.innerHTML = id_.innerHTML + "  ==> " + description_.innerHTML
             document.getElementById("todo").appendChild(place_holder)
             {#document.getElementById("todo").appendChild(id_);#}
             {#document.getElementById("todo").appendChild(name_);#}
