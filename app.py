@@ -126,7 +126,7 @@ def get_list_todos(list_id):
 
 @app.route('/')
 def create():
-    return render_template('create.html', data=Todo.query.order_by('id').all())
+    return redirect(url_for('get_list_todos',list_id=1))
 
 
 if __name__ == '__main__':
