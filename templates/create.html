@@ -98,9 +98,6 @@
             description_.innerHTML = jsonResponse['description'];
             place_holder.innerHTML = id_.innerHTML + "  ==> " + description_.innerHTML
             document.getElementById("todo").appendChild(place_holder)
-            {#document.getElementById("todo").appendChild(id_);#}
-            {#document.getElementById("todo").appendChild(name_);#}
-            {#document.getElementById("todo").appendChild(description_);#}
             document.getElementById("error").className = "hidden";
         }).catch(function (){
             document.getElementById('error').className = "";
