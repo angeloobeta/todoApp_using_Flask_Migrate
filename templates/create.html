@@ -31,6 +31,7 @@
 <form id="form">
     <input id="name" type="text" name="name" value="name">
     <input id="description" type="text" name="description" value="description">
+    <input id="list_id" type="text" name="list_id" value="list_id">
     <input type="submit" value="Create">
 </form>
 <div id="error" class="hidden"> Something went wrong</div>
@@ -83,6 +84,7 @@
             body: JSON.stringify({
                 'name': document.getElementById("name").value,
                 'description': document.getElementById("description").value,
+                'list_id': document.getElementById("list_id").value,
             }),
             headers: {
                 'Content-Type': 'application/json'
