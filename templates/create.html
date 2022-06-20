@@ -78,8 +78,22 @@
         const personId = e.target.dataset['id'];
         fetch('/todos/'+ personId + '/delete-item',{
             method: 'DELETE'
+        }).then(function(){
+            console.log('Parent?', e.target);
+            const item = e.target.parentElement;
+            item.remove();
+            document.getElementById('error').className = "hidden"
         })
     }
+    }
+
+    deleteListButton =  document.querySelectorAll(".delete-list");
+    for (let i=0; i<deleteListButton.length; i++){
+        const deleteButton = deleteListButton[i];
+        deleteButton.onclick = function(e){
+            console.log("Delete event: ", e);
+            const listId = e.target.dataset['id']
+        }
     }
 
     const checkboxes = document.querySelectorAll('.check-completed');
