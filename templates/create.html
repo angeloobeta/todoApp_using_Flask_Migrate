@@ -24,29 +24,59 @@
             float: right;
             cursor: pointer;
             font-size: 20px;
+            width: 30px;
         }
+        .delete-button{
+            margin: 0.1px;
+        }
+        .lists-wrapper, .todos-wrapper {
+        padding: 10px;
+        margin: 10px;
+        display: inline-block;
+        vertical-align: top;
+      }
     </style>
 </head>
 <body>
-<form id="form">
-    <input id="description" type="text" name="description" value="description">
-    <input id="list_id" type="text" name="list_id" value="list_id">
-    <input type="submit" value="Create">
-</form>
-<div id="error" class="hidden"> Something went wrong</div>
-<ul id="todo">{% for d in data %}
-    <pre><li><input data-id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %}/>{{ d.id }}  ==> {{ d.name }} is a {{ d.description }}
-        <button class="delete-button" data-id="{{ d.id }}">&cross;</button></li></pre>
+<div class="lists-wrapper">
+    <h2>{{ active_list.name }}</h2>
+    <ul id="lists">
+        {% for list in lists %}
+            <li>
+                <a href="/lists/{{ list.id }}">
+                    {{ list.id  }}  {{ list.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="todos-wrapper">
+    <form id="form">
+        <input id="category" type="text" name="category" value="Category">
+        <input id="description" type="text" name="description" value="Description">
+        <input id="list_id" type="text" name="list_id" value="Category ID">
+        <input type="submit" value="Create">
+    </form>
+
+    <div id="error" class="hidden"> Something went wrong</div>
+    <ul id="todo">{% for todo in todos %}
+    <pre><li><input data-id="{{ todo.id}}" class="check-completed" type="checkbox" {% if todo.completed %} checked {% endif %}/>ID {{ todo.id }}  ==> {{ todo.name }} is mapped to {{ todo.description }}
+        <button class="delete-button" data-id="{{ todo.id }}">&cross;</button></li></pre>
     {% endfor %}
-</ul>
+    </ul>
+</div>
+
 <script>
+
+
+
     const deleteButton = document.querySelectorAll('.delete-button');
     for(let i = 0; i<deleteButton.length; i++){
         const  button = deleteButton[i]
         button.onclick = function (e){
         console.log('event', e);
         const personId = e.target.dataset['id'];
-        fetch('/todo/'+ personId + '/delete-item',{
+        fetch('/todos/'+ personId + '/delete-item',{
             method: 'DELETE'
         })
     }
@@ -60,7 +90,7 @@
             const newCompleted = e.target.checked;
             const todoId = e.target.dataset['id'];
             console.log(todoId);
-            fetch('/todo/set-completed', {
+            fetch('/todos/'+ todoId+ '/set-completed', {
                 method: 'POST',
                 body: JSON.stringify({
                     'completed': newCompleted

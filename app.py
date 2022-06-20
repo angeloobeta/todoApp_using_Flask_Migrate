@@ -64,6 +64,27 @@ class Todo(db.Model):
         return f'<Todo {self.id} {self.description}>'
 
 
+@app.route('/todos/update/<todo_id>/set-complete', methods=['POST'])
+def update_todo(todo_id):
+    error = False
+    try:
+        complete = request.get_json()['complete']
+        todo = Todo.query.get(todo_id)
+        print('Todo: ', todo)
+        todo.complete = complete
+        db.session.commit()
+    except():
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    if error:
+        abort(500)
+    else:
+        return redirect(url_for('create'))
+
+
 @app.route('/todos/<todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):
     try:
@@ -118,15 +139,16 @@ def create_todo():
 
 @app.route('/lists/<list_id>')
 def get_list_todos(list_id):
-  return render_template('create.html',
-  lists=Todolist.query.all(),
-  active_list=Todolist.query.get(list_id),
-  todos=Todo.query.filter_by(list_id=list_id).order_by('id').all()
-)
+    return render_template('create.html',
+                           lists=Todolist.query.all(),
+                           active_list=Todolist.query.get(list_id),
+                           todos=Todo.query.filter_by(list_id=list_id).order_by('id').all()
+                           )
+
 
 @app.route('/')
 def create():
-    return redirect(url_for('get_list_todos',list_id=1))
+    return redirect(url_for('get_list_todos', list_id=1))
 
 
 if __name__ == '__main__':
