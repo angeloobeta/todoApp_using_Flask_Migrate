@@ -51,7 +51,7 @@
     </ul>
 </div>
 <div class="todos-wrapper">
-    <form id="form">
+    <form id="todo-form">
         <input id="category" type="text" name="category" value="Category">
         <input id="description" type="text" name="description" value="Description">
         <input id="list_id" type="text" name="list_id" value="Category ID">
@@ -106,8 +106,9 @@
 
         }
     }
-    document.getElementById("form").onsubmit =  function (e){
+    document.getElementById("todo-form").onsubmit =  function (e){
         e.preventDefault()
+
         fetch('/todos/create',{
             method:'POST',
             body: JSON.stringify({
@@ -122,16 +123,42 @@
             console.log(jsonResponse);
             const place_holder =  document.createElement("li")
             const id_ = document.createElement("li");
-            const name_ = document.createElement("li");
+            {#const name_ = document.createElement("li");#}
             const description_ = document.createElement("li");
             id_.innerHTML = jsonResponse['id'];
             description_.innerHTML = jsonResponse['description'];
             place_holder.innerHTML = id_.innerHTML + "  ==> " + description_.innerHTML
             document.getElementById("todo").appendChild(place_holder)
             document.getElementById("error").className = "hidden";
+            window.location.reload(true);
         }).catch(function (){
             document.getElementById('error').className = "";
         })
+    }
+
+
+    document.getElementById('list-form').onsubmit = function(e) {
+        e.preventDefault();
+
+        fetch('/lists/create', {
+            method: 'POST',
+            body: JSON.stringify({
+                'name': document.getElementById('todolist-input').value
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(function (response){
+                return response.json();
+            })
+            .then(function(jsonResponse){
+                const liItem = document.createElement('li')
+                liItem.innerHTML = jsonResponse['namer'];
+                document.getElementById('lists').appendChild(liTtem);
+                document.getElementById('error').className = 'hidden';
+                window.location.reload(true);
+            }
     }
 </script>
 </body>
