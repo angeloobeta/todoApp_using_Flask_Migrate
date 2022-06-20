@@ -88,17 +88,23 @@ def update_todo(todo_id):
 @app.route('/todos/<todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):
     try:
-        Todo.query.filter_by(id=todo_id).delete()
+        # Todo.query.filter_by(id=todo_id).delete()
+        todo = Todo.query.get(todo_id)
+        db.session.delete(todo)
         db.session.commit()
     except:
         db.session.rollback()
+        error = True
     finally:
         db.session.close()
+    if error:
+        abort(500)
     return jsonify({'success': True})
 
 
 @app.route('/todos/<todo_id>/set-completed', methods=['POST'])
 def set_completed_todo(todo_id):
+    error = False
     try:
         completed = request.get_json()['completed']
         print('completed', completed)
@@ -107,9 +113,22 @@ def set_completed_todo(todo_id):
         db.session.commit()
     except:
         db.session.rollback()
+        error = True
     finally:
         db.session.close()
-    return redirect(url_for('create'))
+    if error:
+        abort(500)
+    else:
+        return '', 200
+    # return redirect(url_for('create'))
+
+
+@app.route('/lists/<list_id>')
+def get_list_todos(list_id):
+    lists = Todolist.query.all()
+    active_list = Todolist.query.get(list_id)
+    todos = Todo.query.filter_by(list_id=list_id).order_by('id').all()
+    return render_template('create.html', todos=todos, lists=lists, active_list=active_list)
 
 
 @app.route('/todos/create', methods=['POST'])
